@@ -10,8 +10,10 @@ def replace_windows_path_invalid_char(s):
     """
     return re.sub('[\/:*?"<>|]', '-',s)
 
-# 字节bytes转化K\M\G
 def format_size(bytes):
+    """
+    字节bytes转化K\M\G
+    """
     try:
         bytes = float(bytes)
         kb = bytes / 1024

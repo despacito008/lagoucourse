@@ -8,8 +8,7 @@ VOD_META_URL = "https://gate.lagou.com/v1/neirong/kaiwu/getLessonPlayHistory?les
 VOD_URL = "https://vod.cn-shanghai.aliyuncs.com/?{0}"
 
 # =================== request ...
-COOKIE = " 填入自己的 cookie "
-
+COOKIE = ''
 HEADER = {
     # "Content-Type": "application/x-www-form-urlencoded",
     "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36",

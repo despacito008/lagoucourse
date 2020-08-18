@@ -9,13 +9,15 @@ from lagoucourse.download.course import *
 from lagoucourse.decrypt.aliplayer_decrypt import *
 from lagoucourse.constant.setting import *
 from lagoucourse.utils.codec import *
-from urllib import request
+import urllib
+import urllib.request
+
 
 start_time = time.time()
 
 course_list = get_course_list(HEADER, COURSE_URL, INSPECT_COURSE_USL)
 
-def Schedule(blocknum, blocksize, totalsize):
+def download_report_hook(blocknum, blocksize, totalsize):
     speed = (blocknum * blocksize) / (time.time() - start_time)
     # speed_str = " Speed: %.2f" % speed
     speed_str = " Speed: %s" % format_size(speed)
@@ -31,6 +33,13 @@ def Schedule(blocknum, blocksize, totalsize):
     f.flush()
     # time.sleep(0.1)
     f.write('\r')
+
+def auto_retry_down(url,filename):
+    try:
+        urllib.request.urlretrieve(url,filename,download_report_hook)
+    except urllib.error.ContentTooShortError:
+        print(f'download {url} Network conditions is not good.Reloading...')
+        auto_retry_down(url,filename)
 
 def get_original_list(header, course_list, vod_meta_url, vod_url):
     page = requests.Session()
@@ -87,8 +96,7 @@ def get_original_list(header, course_list, vod_meta_url, vod_url):
                         os.makedirs(f"D:\\backup\\lagou\\{dirname}",exist_ok=True)
                     print(f"正在下载D:\\backup\\lagou\\{dirname}\\{in_lesson['theme']}")
                     downloadFileName = replace_windows_path_invalid_char(in_lesson['theme'].replace(" ","") + "_" + str(index) + ".mp4")
-                    request.urlretrieve(play_item['PlayURL'],f"D:\\backup\\lagou\\{dirname}\\{downloadFileName}", Schedule)
-
+                    auto_retry_down(play_item['PlayURL'],f"D:\\backup\\lagou\\{dirname}\\{downloadFileName}")
 
 get_original_list(HEADER, course_list, VOD_META_URL, VOD_URL)
 print(f"总耗时:{time.time()-start_time}s")
